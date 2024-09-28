@@ -1,0 +1,40 @@
+services:
+
+  glpi:
+    image: diouxx/glpi:${GLPI_VERSION}
+    container_name : glpi
+    hostname: glpi
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /var/www/glpi/:/var/www/html/glpi
+    ports:
+      - "{{ glpi_port }}:80"
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      TIMEZONE: "{{ timezone }}"
+      ROOT_URL: "{{ inventory_hostname }}"
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  mariadb:
+    image: mariadb:${MARIA_VERSION}
+    container_name: glpi_db
+    hostname: glpi_db
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3306:3306"
+    restart: unless-stopped
+
+volumes:
+  db_data:

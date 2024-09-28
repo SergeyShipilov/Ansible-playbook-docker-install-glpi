@@ -1,0 +1,77 @@
+---
+- name: create dirs
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+    recurse: true
+  loop:
+    - "{{ glpi_path }}"
+    - "{{ glpi_install_path }}"
+
+- name: transfer files
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: '{{ item.dest }}'
+    mode: '{{ item.mode }}'
+  loop: 
+    - { src: env.j2, dest: '{{ glpi_path }}/.env', mode: '644' }
+    - { src: docker-compose.yml.j2, dest: '{{ glpi_path }}/docker-compose.yml', mode: '644' }
+
+- name: check if glpi is already installed
+  ansible.builtin.stat:
+    path: "{{ glpi_install_path }}/glpi"
+  register: glpiinstalled
+
+- name: download and extract glpi
+  ansible.builtin.unarchive:
+    src: "{{ glpi_download_url }}"
+    remote_src: true
+    dest: "{{ glpi_install_path }}"
+    owner: "{{ glpi_web_owner }}"
+    group: "{{ glpi_web_group }}"
+    validate_certs: false
+  when: not glpiinstalled.stat.exists or glpi_update
+
+- name: set permissions to files directory
+  ansible.builtin.file:
+    path: "{{ glpi_install_path }}/glpi/files"
+    recurse: true
+    owner: "{{ glpi_web_owner }}"
+    group: "{{ glpi_web_group }}"
+  when: not glpiinstalled.stat.exists or glpi_update
+
+- name: set permissions to config directory
+  ansible.builtin.file:
+    path: "{{ glpi_install_path }}/glpi/config"
+    recurse: true
+    owner: "{{ glpi_web_owner }}"
+    group: "{{ glpi_web_group }}"
+  when: not glpiinstalled.stat.exists or glpi_update
+
+- name: download plugins
+  ansible.builtin.get_url:
+    url: "{{ item }}"
+    dest: "{{ glpi_install_path }}/glpi/plugins"
+  loop: "{{ glpi_plugins_dl_addr }}"
+  when: glpi_plugins_dl_addr is defined
+
+- name: unarchive plugins
+  ansible.builtin.unarchive:
+    src: "{{ glpi_install_path }}/glpi/plugins/{{ item }}"
+    dest: "{{ glpi_install_path }}/glpi/plugins"
+    owner: "{{ glpi_web_owner }}"
+    group: "{{ glpi_web_group }}"
+    remote_src: true
+  loop: "{{ glpi_plugins_tar_name }}"
+  when: glpi_plugins_dl_addr is defined
+
+- name: run docker-compose up
+  ansible.builtin.shell: docker-compose up --build -d
+  args:
+    chdir: '{{ path }}'
+  ignore_errors: true
+  register: output
+
+- ansible.builtin.debug:
+    var: output

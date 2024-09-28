@@ -1,0 +1,41 @@
+---
+glpi_version: 10.0.6
+glpi_version_package: "glpi-{{ glpi_version }}.tgz"
+
+glpi_auto_install: false
+glpi_update: false
+glpi_download_url: "https://github.com/glpi-project/glpi/releases/download/{{ glpi_version }}/{{ glpi_version_package }}"
+
+glpi_path: /opt/glpi
+glpi_web_owner: "www-data"
+glpi_web_group: "www-data"
+glpi_install_path: /var/www
+
+
+glpi_plugins_dl_addr:
+  - "https://github.com/fusioninventory/fusioninventory-for-glpi/releases/download/glpi{{ glpi_version }}%2B1.1/fusioninventory-{{ glpi_version }}+1.1.tar.bz2"
+  - https://github.com/yllen/reports/releases/download/v1.16.0/glpi-reports-1.16.0.tar.gz
+  - https://github.com/pluginsGLPI/formcreator/releases/download/2.13.9/glpi-formcreator-2.13.9.tar.bz2
+  - https://github.com/pluginsGLPI/addressing/releases/download/3.0.2/glpi-addressing-3.0.2.tar.bz2
+  - https://github.com/yllen/pdf/releases/download/v3.0.0/glpi-pdf-3.0.0.tar.gz
+  - https://github.com/InfotelGLPI/printercounters/releases/download/2.0.1/glpi-printercounters-2.0.1.tar.bz2
+  - https://github.com/InfotelGLPI/tasklists/releases/download/2.0.3/glpi-tasklists-2.0.3.tar.bz2
+  - https://github.com/InfotelGLPI/financialreports/releases/download/3.0.0/glpi-financialreports-3.0.0.tar.bz2
+  - https://github.com/ericferon/glpi-webhook/releases/download/v1.0.18/webhook-v1.0.18.tar.gz
+  - https://github.com/pluginsGLPI/mreporting/releases/download/1.8.6/glpi-mreporting-1.8.6.tar.bz2
+  - https://github.com/pluginsGLPI/oauthimap/releases/download/1.4.3/glpi-oauthimap-1.4.3.tar.bz2
+  - https://github.com/edgardmessias/glpi-singlesignon/releases/download/v1.3.3/singlesignon.tgz
+
+glpi_plugins_tar_name:
+  - "fusioninventory-{{ glpi_version }}+1.1.tar.bz2"
+  - reports-1.16.0.tar.gz
+  - glpi-formcreator-2.13.9.tar.bz2
+  - glpi-addressing-3.0.2.tar.bz2
+  - glpi-pdf-3.0.0.tar.gz
+  - glpi-printercounters-2.0.1.tar.bz2
+  - glpi-tasklists-2.0.3.tar.bz2
+  - glpi-financialreports-3.0.0.tar.bz2
+  - webhook-v1.0.18.tar.gz
+  - glpi-mreporting-1.8.6.tar.bz2
+  - glpi-oauthimap-1.4.3.tar.bz2
+  - singlesignon.tgz

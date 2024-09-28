@@ -1,0 +1,24 @@
+---
+- name: include server install play
+  ansible.builtin.import_playbook: server-install.yml
+
+- name: include docker install play
+  ansible.builtin.import_playbook: docker-install.yml
+  
+- name: inventory gloi install docker
+  become: true
+  hosts: '{{ host }}'
+  vars:
+    timezone: 'Europe/Warsaw'
+    glpi_version: '10.0.6'
+    fusioninventory_version: '10.0.6'
+    mariadb_version: '10.10.2'
+    email: 'admin@example.com'
+    MARIADB_USER_GLPI: 'user_glpi'
+    MARIADB_PASSWORD_GLPI: 'strong_password'
+    MARIADB_DATABASE_GLPI: 'glpi'
+    MARIADB_ROOT_PASSWORD_GLPI: 'strong_password'
+    
+
+  roles:
+  - roles/glpi-docker-install
